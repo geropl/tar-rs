@@ -65,8 +65,8 @@ impl<R: Read> Archive<R> {
     /// sequence. If entries are processed out of sequence (from what the
     /// iterator returns), then the contents read for each entry may be
     /// corrupted.
-    pub fn entries(&mut self) -> io::Result<Entries<R>> {
-        let me: &mut Archive<Read> = self;
+    pub fn entries(&self) -> io::Result<Entries<R>> {
+        let me: &Archive<Read> = self;
         me._entries().map(|fields| Entries {
             fields: fields,
             _ignored: marker::PhantomData,
@@ -135,7 +135,7 @@ impl<R: Read> Archive<R> {
 }
 
 impl<'a> Archive<Read + 'a> {
-    fn _entries(&mut self) -> io::Result<EntriesFields> {
+    fn _entries(&self) -> io::Result<EntriesFields> {
         if self.inner.pos.get() != 0 {
             return Err(other(
                 "cannot call entries unless archive is at \
